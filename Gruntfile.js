@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         files: {
           'css/app.css': 'sass/app.scss'
         }
-      }
+      },
     },
 
     nodewebkit: {
@@ -130,7 +130,11 @@ module.exports = function(grunt) {
             flatten: true
           }
         ]
-      }
+      },
+    },
+
+    jshint: {
+      all: ['Gruntfile.js', 'js/*.js', 'js/frontend/**/*.js'],
     }
   });
 };
@@ -154,4 +158,4 @@ var parseBuildPlatforms = function(argumentPlatform) {
   };
 
   return buildPlatforms;
-}
+};
