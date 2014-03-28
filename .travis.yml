@@ -1,9 +1,21 @@
 language: node_js
 node_js:
   - "0.10"
-before_install: 
+before_install:
   - "npm install -g grunt-cli"
   - "gem install compass"
+env:
+  - BUILD=jshint
+  - BUILD=linux64
+  - BUILD=linux32
+  - BUILD=windows
+  - BUILD=mac
 before_script:
   - "grunt"
-  - "grunt build"
+script:
+  - '[ $BUILD == "jshint" ] && grunt jshint || grunt build --platforms=$BUILD --verbose'
+notifications:
+  email: false
+cache:
+  directories:
+    - node_modules
