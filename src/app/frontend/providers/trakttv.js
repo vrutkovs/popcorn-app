@@ -1,5 +1,5 @@
-var request = require('request')
-  , URI = require('URIjs');
+var request = require('request'),
+    URI = require('URIjs');
 
 var API_ENDPOINT = URI('http://api.trakt.tv/'),
 	MOVIE_PATH = 'movie',
@@ -11,7 +11,7 @@ function MovieCollection(imdbIDs) {
 }
 
 MovieCollection.prototype.getSummaries = function(callback) {
-	if(this.ids.length == 0) {
+	if(this.ids.length === 0) {
 		callback([]);
 		return;
 	}
@@ -28,14 +28,14 @@ MovieCollection.prototype.getSummaries = function(callback) {
 	request(uri.toString(), {json: true}, function(err, res, body) {
 		callback(body);
 	});
-}
+};
 
 exports.MovieCollection = MovieCollection;
 
 exports.resizeImage = function(imageUrl, width) {
 	var uri = URI(imageUrl),
-		ext = uri.suffix()
+		ext = uri.suffix();
 		file = uri.filename().split('.' + ext)[0];
 
 	return uri.filename(file + '-' + width + '.' + ext).toString();
-}
+};

@@ -15,7 +15,7 @@
         movies: [],
 
         addMovie: function(model) {
-            var stored = _.find(this.movies, function(movie) { movie.imdb == model.imdb });
+            var stored = _.find(this.movies, function(movie) { return movie.imdb === model.imdb; });
 
             // Create it on memory map if it doesn't exist.
             if (typeof stored === 'undefined') {
@@ -63,6 +63,7 @@
                 currentRequest.abort();
             }
 
+            /*jshint -W120 */
             var thisRequest = currentRequest = request(this.apiUrl, {json: true}, function(err, res, ytsData) {
                 var i = 0;
 
@@ -84,7 +85,7 @@
                 .then(function(subtitles) {
                     async.filter(
                       imdbIds,
-                      function(cd, cb) { App.Cache.getItem('trakttv', cd, function(d) { cb(d == undefined) }) },
+                      function(cd, cb) { App.Cache.getItem('trakttv', cd, function(d) { cb(d === undefined); }); },
                       function(imdbCodes) {
                         var traktMovieCollection = new trakt.MovieCollection(imdbCodes);
                         traktMovieCollection.getSummaries(function(trakData) {
@@ -94,9 +95,9 @@
                             i = ytsData.MovieList.length;
                             ytsData.MovieList.forEach(function (movie) {
                                 // No imdb, no movie.
-                                if( typeof movie.ImdbCode != 'string' || movie.ImdbCode.replace('tt', '') == '' ){ return; }
+                                if( typeof movie.ImdbCode != 'string' || movie.ImdbCode.replace('tt', '') === '' ){ return; }
 
-                                var traktInfo = _.find(trakData, function(trakMovie) { return trakMovie.imdb_id == movie.ImdbCode });
+                                var traktInfo = _.find(trakData, function(trakMovie) { return trakMovie.imdb_id == movie.ImdbCode; });
 
                                 var torrents = {};
                                 torrents[movie.Quality] = movie.TorrentUrl;
@@ -136,7 +137,7 @@
                                     App.Cache.setItem('trakttv', traktInfo.imdb_id, traktInfo);
                                     console.warn('Trakt.tv Cache Miss %O', traktInfo);
                                     collection.addMovie(movieModel);
-                                    if(--i == 0) {
+                                    if(--i === 0) {
                                         collection.set(collection.movies);
                                         this.state = 'loaded';
                                         collection.trigger('loaded');
@@ -151,7 +152,7 @@
                                             movieModel.runtime = +traktInfo.runtime;
                                         }
                                         collection.addMovie(movieModel);
-                                        if(--i == 0) {
+                                        if(--i === 0) {
                                             collection.set(collection.movies);
                                             collection.trigger('loaded');
                                             this.state = 'loaded';
@@ -159,10 +160,10 @@
                                     });
                                 }
                             });
-                        })
-                    })
+                        });
+                    });
                 });
-            })
+            });
         }
     });
 
