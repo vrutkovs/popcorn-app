@@ -13,8 +13,8 @@ env:
 before_script:
   - "grunt"
 script:
-  - '[ $BUILD == "jshint" ] && grunt jshint'
-  - '[ $BUILD != "jshint" ] && grunt build --platforms=$BUILD --verbose'
+  - 'if [ $BUILD == "jshint" ]; then grunt jshint; fi'
+  - 'if [ $BUILD != "jshint" ]; then grunt build --platforms=$BUILD --verbose; fi'
 notifications:
   email: false
 cache:
