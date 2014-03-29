@@ -118,6 +118,7 @@ jQuery(function ($) {
     }
     // Get video player
     var videoPlayer = $("#video_player");
+    var currentTime, currentVolume;
     if (videoPlayer.length > 0) {
       videoPlayer = videoPlayer[0].player;
       if (event.keyCode == 32 && $("#video_player").is(".vjs-playing")) {
@@ -129,22 +130,22 @@ jQuery(function ($) {
       }
       if (event.keyCode == 37) {
         // Left arrow: jump backward
-        var currentTime = videoPlayer.currentTime();
+        currentTime = videoPlayer.currentTime();
         videoPlayer.currentTime(currentTime - 10);
       }
       if (event.keyCode == 38) {
         // Up arrow: increase volume (1.0 is all the way up)
-        var currentVolume = videoPlayer.volume();
+        currentVolume = videoPlayer.volume();
         videoPlayer.volume(currentVolume + 0.1);
       }
       if (event.keyCode == 39) {
         // Right arrow: jump forward
-        var currentTime = videoPlayer.currentTime();
+        currentTime = videoPlayer.currentTime();
         videoPlayer.currentTime(currentTime + 10);
       }
       if (event.keyCode == 40) {
         // Down arrow: decrease volume (0 is off, muted)
-        var currentVolume = videoPlayer.volume();
+        currentVolume = videoPlayer.volume();
         videoPlayer.volume(currentVolume - 0.1);
       }
     }

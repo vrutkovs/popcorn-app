@@ -3,7 +3,7 @@ App.View.MovieListItem = Marionette.ItemView.extend({
     className: 'movie',
     model: App.Model.Movie,
     id: function() {
-        return 'movie-'+this.model.get('imdb')
+        return 'movie-'+this.model.get('imdb');
     },
 
     events: {

@@ -16,14 +16,19 @@
     }
 
 
+    function installWin(dlPath, updateData) {}
+    function installLin(dlPath, updateData) {}
+    function installMac(dlPath, updateData) {}
+    function installationComplete(updateData) {}
+
     console.debug('Testing if we should check for update...', testInstalled());
     if(testInstalled()) {
-        var request = require('request')
-          , fs = require('fs')
-          , rm = require('rimraf')
-          , path = require('path')
-          , crypto = require('crypto')
-          , zip = require('adm-zip');
+        var request = require('request'),
+            fs = require('fs'),
+            rm = require('rimraf'),
+            path = require('path'),
+            crypto = require('crypto'),
+            zip = require('adm-zip');
 
         var updateUrl = Settings.get('updateNotificationUrl');
 
@@ -40,8 +45,9 @@
             // returns `-` when ver2 less than
             // returns `0` when ver2 equal
             // returns `+` when ver2 greater than
-            ver1 = _.map(ver1.replace(/[^0-9.]/g, '').split('.'), function(num) { var num = parseInt(num); return Number.isNaN(num) ? 0 : num; });
-            ver2 = _.map(ver2.replace(/[^0-9.]/g, '').split('.'), function(num) { var num = parseInt(num); return Number.isNaN(num) ? 0 : num; });
+            function isNan(num) { var parsedNum = parseInt(num); return Number.isNaN(parsedNum) ? 0 : parsedNum; }
+            ver1 = _.map(ver1.replace(/[^0-9.]/g, '').split('.'), isNan(num));
+            ver2 = _.map(ver2.replace(/[^0-9.]/g, '').split('.'), isNan(num));
 
             var count = Math.max(ver1.length, ver2.length);
 
@@ -65,7 +71,7 @@
                     return 1;
                 return -1;
             }
-        }
+        };
 
         request(updateUrl, {json: true}, function(err, res, data) {
             if(err || !data) return; // Its just an updater, we don't care :P
@@ -106,7 +112,7 @@
                                 if(fs.existsSync(outputFile)) {
                                     fs.unlink(outputFile, function(err) {
                                         if(err) throw err;
-                                    })
+                                    });
                                 }
                             } else {
                                 // Valid update data! Overwrite the old data and move on with life!
@@ -123,11 +129,11 @@
                         });
                 });
             }
-        })
+        });
 
         // Under Windows, we install to %APPDATA% and the app
         // is in a folder called 'app'. 
-        function installWin(dlPath, updateData) {
+        installWin = function(dlPath, updateData) {
             var outDir = path.dirname(dlPath),
                 installDir = path.join(outDir, 'app');
 
@@ -137,16 +143,16 @@
                 fs.unlink(dlPath, function(err) {
                     if(err) throw err;
                     installationComplete(updateData);
-                })
+                });
             } catch(ex) {
                 // It's cool, worst comes to worst, we have a 17mb
                 // .nw file lying around :P
             }
-        }
+        };
 
         // Under Linux, we package the app alongside the binary
         // in a file called 'package.nw'.
-        function installLin(dlPath, updateData) {
+        installLin = function(dlPath, updateData) {
             var outDir = path.dirname(dlPath);
             fs.rename(path.join(outDir, 'package.nw'), path.join(outDir, 'package.nw.old'), function(err) {
                 if(err) throw err;
@@ -158,22 +164,22 @@
                         if(fs.existsSync(dlPath)) {
                             fs.unlink(dlPath, function(err) {
                                 if(err) throw err;
-                            })
+                            });
                         }
                         throw err;
                     } else {
                         fs.unlink(path.join(outDir, 'package.nw.old'), function(err) {
                             if(err) throw err;
                             installationComplete(updateData);
-                        })
+                        });
                     }
-                })
-            })
-        }
+                });
+            });
+        };
 
         // Under Mac, we install the app into a folder called 
         // 'app.nw' under the 'Resources' directory of the .app
-        function installMac(dlPath, updateData) {
+        installMac = function(dlPath, updateData) {
             var outDir = path.dirname(dlPath),
                 installDir = path.join(outDir, 'app.nw');
             rm(installDir, function(err) {
@@ -185,15 +191,15 @@
                     fs.unlink(dlPath, function(err) {
                         if(err) throw err;
                         installationComplete(updateData);
-                    })
+                    });
                 } catch(ex) {
                     // Dunno what to do here :( We deleted the app files, 
                     // and now we can't extract it... sheet!
                 }
-            })
-        }
+            });
+        };
 
-        function installationComplete(updateData) {
+        installationComplete = function(updateData) {
             var $el = $('#notification');
             $el.html(
                 '<h1>' + updateData.title + ' Installed</h1>'   +
@@ -213,7 +219,7 @@
                 argv.push(CWD);
                 spawn(process.execPath, argv, { cwd: CWD, detached: true, stdio: [ 'ignore', 'ignore', 'ignore' ] }).unref();
                 gui.App.quit();
-            })
+            });
                 
             $chnglog.on('click', function() {
                 var $changelog = $('#changelog-container').html(_.template($('#changelog-tpl').html())(updateData));
@@ -221,9 +227,9 @@
                     $changelog.hide();
                 });
                 $changelog.show();
-            })
+            });
 
-            $('body').addClass('has-notification')
-        }
+            $('body').addClass('has-notification');
+        };
     }
 })();
